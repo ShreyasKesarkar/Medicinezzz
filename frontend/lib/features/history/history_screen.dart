@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'history_provider.dart';
 import '../medicines/medicines_provider.dart';
 import '../../core/theme/app_theme.dart';
+import '../../shared/widgets/loading_indicator.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
@@ -249,7 +250,7 @@ class HistoryScreen extends ConsumerWidget {
                     },
                   );
                 },
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => const ServerLoadingIndicator(message: "Loading history logs..."),
                 error: (err, stack) => Center(
                   child: Padding(
                     padding: const EdgeInsets.all(24.0),

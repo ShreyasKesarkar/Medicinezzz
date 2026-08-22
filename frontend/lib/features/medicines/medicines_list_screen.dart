@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'medicines_provider.dart';
 import '../../shared/models/medicine_models.dart';
 import '../../core/theme/app_theme.dart';
+import '../../shared/widgets/loading_indicator.dart';
 import 'package:intl/intl.dart';
 
 class MedicinesListScreen extends ConsumerStatefulWidget {
@@ -96,7 +97,7 @@ class _MedicinesListScreenState extends ConsumerState<MedicinesListScreen> with 
               },
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const ServerLoadingIndicator(message: "Loading medications..."),
           error: (err, stack) => Center(
             child: Padding(
               padding: const EdgeInsets.all(24.0),

@@ -5,6 +5,7 @@ import 'timeline_provider.dart';
 import '../../core/network/api_service.dart';
 import '../../shared/models/timeline_models.dart';
 import '../../core/theme/app_theme.dart';
+import '../../shared/widgets/loading_indicator.dart';
 
 class TimelineScreen extends ConsumerWidget {
   const TimelineScreen({super.key});
@@ -59,7 +60,7 @@ class TimelineScreen extends ConsumerWidget {
                 );
               },
               loading: () => const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
+                child: ServerLoadingIndicator(message: "Loading timeline..."),
               ),
               error: (err, stack) => SliverFillRemaining(
                 child: Center(
