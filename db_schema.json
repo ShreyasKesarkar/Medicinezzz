@@ -1,0 +1,1105 @@
+{
+  "dosage_units": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "name",
+        "data_type": "character varying",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "is_system_defined",
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "column_default": "false"
+      },
+      {
+        "column_name": "is_active",
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "column_default": "true"
+      },
+      {
+        "column_name": "created_by",
+        "data_type": "uuid",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      },
+      {
+        "column_name": "updated_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "dosage_units_created_by_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "created_by",
+        "foreign_table": "patients",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "dosage_units_name_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "name",
+        "foreign_table": "dosage_units",
+        "foreign_column": "name"
+      },
+      {
+        "constraint_name": "dosage_units_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "dosage_units",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "event_doses": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "event_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "medicine_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "schedule_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "schedule_version_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "dosage_amount",
+        "data_type": "numeric",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "dosage_unit_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "scheduled_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "status",
+        "data_type": "USER-DEFINED",
+        "is_nullable": "NO",
+        "column_default": "'PENDING'::dose_status"
+      },
+      {
+        "column_name": "actual_taken_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "status_changed_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "status_remark",
+        "data_type": "text",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "event_doses_dosage_unit_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "dosage_unit_id",
+        "foreign_table": "dosage_units",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "event_doses_event_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "event_id",
+        "foreign_table": "medication_events",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "event_doses_event_id_schedule_id_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "event_id",
+        "foreign_table": "event_doses",
+        "foreign_column": "event_id"
+      },
+      {
+        "constraint_name": "event_doses_event_id_schedule_id_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "event_id",
+        "foreign_table": "event_doses",
+        "foreign_column": "schedule_id"
+      },
+      {
+        "constraint_name": "event_doses_event_id_schedule_id_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "schedule_id",
+        "foreign_table": "event_doses",
+        "foreign_column": "event_id"
+      },
+      {
+        "constraint_name": "event_doses_event_id_schedule_id_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "schedule_id",
+        "foreign_table": "event_doses",
+        "foreign_column": "schedule_id"
+      },
+      {
+        "constraint_name": "event_doses_medicine_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "medicine_id",
+        "foreign_table": "medicines",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "event_doses_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "event_doses",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "event_doses_schedule_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "schedule_id",
+        "foreign_table": "medicine_schedules",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "event_doses_schedule_version_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "schedule_version_id",
+        "foreign_table": "medicine_schedule_versions",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "event_notifications": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "event_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "scheduled_for",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "event_notifications_event_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "event_id",
+        "foreign_table": "medication_events",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "event_notifications_event_id_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "event_id",
+        "foreign_table": "event_notifications",
+        "foreign_column": "event_id"
+      },
+      {
+        "constraint_name": "event_notifications_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "event_notifications",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "medication_events": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "patient_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "scheduled_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "medication_events_patient_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "patient_id",
+        "foreign_table": "patients",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medication_events_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "medication_events",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "medication_instructions": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "medicine_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "instruction_type",
+        "data_type": "USER-DEFINED",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "effective_from",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "effective_until",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "remark",
+        "data_type": "text",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "created_by",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "medication_instructions_created_by_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "created_by",
+        "foreign_table": "patients",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medication_instructions_medicine_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "medicine_id",
+        "foreign_table": "medicines",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medication_instructions_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "medication_instructions",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "medicine_history": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "medicine_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "event_type",
+        "data_type": "USER-DEFINED",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "event_time",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      },
+      {
+        "column_name": "schedule_id",
+        "data_type": "uuid",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "dose_id",
+        "data_type": "uuid",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "instruction_id",
+        "data_type": "uuid",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "note_id",
+        "data_type": "uuid",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "previous_data",
+        "data_type": "jsonb",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "new_data",
+        "data_type": "jsonb",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "remark",
+        "data_type": "text",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "created_by",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "medicine_history_created_by_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "created_by",
+        "foreign_table": "patients",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_history_dose_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "dose_id",
+        "foreign_table": "event_doses",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_history_instruction_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "instruction_id",
+        "foreign_table": "medication_instructions",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_history_medicine_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "medicine_id",
+        "foreign_table": "medicines",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_history_note_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "note_id",
+        "foreign_table": "medicine_notes",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_history_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "medicine_history",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_history_schedule_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "schedule_id",
+        "foreign_table": "medicine_schedules",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "medicine_notes": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "medicine_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "note",
+        "data_type": "text",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "created_by",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "medicine_notes_created_by_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "created_by",
+        "foreign_table": "patients",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_notes_medicine_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "medicine_id",
+        "foreign_table": "medicines",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_notes_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "medicine_notes",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "medicine_schedule_versions": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "schedule_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "version_number",
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "schedule_time",
+        "data_type": "time without time zone",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "dosage_amount",
+        "data_type": "numeric",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "dosage_unit_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "frequency",
+        "data_type": "USER-DEFINED",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "weekday",
+        "data_type": "smallint",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "interval_days",
+        "data_type": "integer",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "start_date",
+        "data_type": "date",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "planned_end_date",
+        "data_type": "date",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "effective_from",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "effective_until",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "change_remark",
+        "data_type": "text",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "medicine_schedule_versions_dosage_unit_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "dosage_unit_id",
+        "foreign_table": "dosage_units",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_schedule_versions_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "medicine_schedule_versions",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_schedule_versions_schedule_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "schedule_id",
+        "foreign_table": "medicine_schedules",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_schedule_versions_schedule_id_version_number_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "schedule_id",
+        "foreign_table": "medicine_schedule_versions",
+        "foreign_column": "schedule_id"
+      },
+      {
+        "constraint_name": "medicine_schedule_versions_schedule_id_version_number_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "schedule_id",
+        "foreign_table": "medicine_schedule_versions",
+        "foreign_column": "version_number"
+      },
+      {
+        "constraint_name": "medicine_schedule_versions_schedule_id_version_number_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "version_number",
+        "foreign_table": "medicine_schedule_versions",
+        "foreign_column": "schedule_id"
+      },
+      {
+        "constraint_name": "medicine_schedule_versions_schedule_id_version_number_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "version_number",
+        "foreign_table": "medicine_schedule_versions",
+        "foreign_column": "version_number"
+      }
+    ]
+  },
+  "medicine_schedules": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "medicine_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "status",
+        "data_type": "USER-DEFINED",
+        "is_nullable": "NO",
+        "column_default": "'ACTIVE'::schedule_status"
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      },
+      {
+        "column_name": "updated_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "medicine_schedules_medicine_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "medicine_id",
+        "foreign_table": "medicines",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_schedules_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "medicine_schedules",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "medicine_types": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "name",
+        "data_type": "character varying",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "is_system_defined",
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "column_default": "false"
+      },
+      {
+        "column_name": "is_active",
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "column_default": "true"
+      },
+      {
+        "column_name": "created_by",
+        "data_type": "uuid",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      },
+      {
+        "column_name": "updated_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "medicine_types_created_by_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "created_by",
+        "foreign_table": "patients",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicine_types_name_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "name",
+        "foreign_table": "medicine_types",
+        "foreign_column": "name"
+      },
+      {
+        "constraint_name": "medicine_types_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "medicine_types",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "medicines": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "patient_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "name",
+        "data_type": "character varying",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "medicine_type_id",
+        "data_type": "uuid",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "status",
+        "data_type": "USER-DEFINED",
+        "is_nullable": "NO",
+        "column_default": "'ACTIVE'::medicine_status"
+      },
+      {
+        "column_name": "previous_medicine_id",
+        "data_type": "uuid",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "finished_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "stopped_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      },
+      {
+        "column_name": "updated_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "medicines_medicine_type_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "medicine_type_id",
+        "foreign_table": "medicine_types",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicines_patient_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "patient_id",
+        "foreign_table": "patients",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicines_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "medicines",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "medicines_previous_medicine_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "previous_medicine_id",
+        "foreign_table": "medicines",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "patients": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "user_id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "date_of_birth",
+        "data_type": "date",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      },
+      {
+        "column_name": "updated_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "patients_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "patients",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "patients_user_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "user_id",
+        "foreign_table": "user_profiles",
+        "foreign_column": "id"
+      },
+      {
+        "constraint_name": "patients_user_id_key",
+        "constraint_type": "UNIQUE",
+        "column_name": "user_id",
+        "foreign_table": "patients",
+        "foreign_column": "user_id"
+      }
+    ]
+  },
+  "user_profiles": {
+    "columns": [
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "full_name",
+        "data_type": "character varying",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "timezone",
+        "data_type": "character varying",
+        "is_nullable": "NO",
+        "column_default": "'Asia/Kolkata'::character varying"
+      },
+      {
+        "column_name": "created_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      },
+      {
+        "column_name": "updated_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "now()"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_name": "user_profiles_id_fkey",
+        "constraint_type": "FOREIGN KEY",
+        "column_name": "id",
+        "foreign_table": null,
+        "foreign_column": null
+      },
+      {
+        "constraint_name": "user_profiles_pkey",
+        "constraint_type": "PRIMARY KEY",
+        "column_name": "id",
+        "foreign_table": "user_profiles",
+        "foreign_column": "id"
+      }
+    ]
+  },
+  "_enums": {
+    "dose_status": [
+      "PENDING",
+      "TAKEN",
+      "MISSED",
+      "SKIPPED",
+      "NOT_REQUIRED"
+    ],
+    "frequency_type": [
+      "DAILY",
+      "WEEKLY",
+      "EVERY_N_DAYS"
+    ],
+    "history_event_type": [
+      "MEDICINE_CREATED",
+      "MEDICINE_UPDATED",
+      "SCHEDULE_CREATED",
+      "SCHEDULE_UPDATED",
+      "SCHEDULE_ENDED",
+      "DOSE_CREATED",
+      "DOSE_TAKEN",
+      "DOSE_MISSED",
+      "DOSE_SKIPPED",
+      "DOSE_NOT_REQUIRED",
+      "DOSE_CORRECTED",
+      "PAUSE_STARTED",
+      "PAUSE_EXTENDED",
+      "MEDICINE_RESUMED",
+      "MEDICINE_STOPPED",
+      "MEDICINE_FINISHED",
+      "FINISH_UNDONE",
+      "NOTE_ADDED",
+      "NOTE_CORRECTED",
+      "INSTRUCTION_ADDED",
+      "INSTRUCTION_CORRECTED"
+    ],
+    "instruction_type": [
+      "PAUSE",
+      "RESUME",
+      "STOP",
+      "FINISH",
+      "EXTEND_PAUSE"
+    ],
+    "medicine_status": [
+      "ACTIVE",
+      "PAUSED",
+      "STOPPED",
+      "FINISHED"
+    ],
+    "schedule_status": [
+      "ACTIVE",
+      "ENDED",
+      "INACTIVE"
+    ]
+  }
+}

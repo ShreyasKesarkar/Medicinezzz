@@ -1,0 +1,41 @@
+# Environment Files (Credentials - NEVER UPLOAD THESE)
+.env
+*.env
+.env.*
+secrets.json
+backend/.env
+
+# Python (Backend)
+backend/venv/
+backend/.venv/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Flutter / Dart (Frontend)
+frontend/.dart_tool/
+frontend/.packages
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/build/
+frontend/ios/Flutter/flutter_export_environment.sh
+frontend/ios/Flutter/Flutter.podspec
+frontend/ios/Flutter/Generated.xcconfig
+frontend/ios/Flutter/flutter_export_environment.plist
+frontend/android/key.properties
+
+# OS Caches & IDEs
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
