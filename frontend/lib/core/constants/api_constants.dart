@@ -14,8 +14,7 @@ class ApiConstants {
       } catch (_) {}
       return "http://localhost:8000/api/v1";
     } else {
-      // TODO: Replace with your actual Render web service URL once deployed
-      return "https://medicinezzz-backend.onrender.com/api/v1";
+      return "https://medicinezzz.onrender.com/api/v1";
     }
   }
 
