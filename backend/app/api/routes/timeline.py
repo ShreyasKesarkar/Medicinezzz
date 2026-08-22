@@ -29,9 +29,9 @@ async def get_timeline(
         
     patient_uuid = UUID(patient["patient_id"])
     
-    # 1. Trigger rolling window generation (7 days past, 30 days future from target date)
-    start_gen = target_date - timedelta(days=7)
-    end_gen = target_date + timedelta(days=30)
+    # 1. Trigger rolling window generation (1 day past, 2 days future from target date)
+    start_gen = target_date - timedelta(days=1)
+    end_gen = target_date + timedelta(days=2)
     await SchedulerService.generate_events_for_patient(conn, patient_uuid, start_gen, end_gen)
     
     # 2. Query all doses for target date

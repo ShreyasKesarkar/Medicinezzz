@@ -74,6 +74,8 @@ class SchedulerService:
         schedules = await ScheduleRepository.get_active_schedules_for_patient(conn, patient_id)
         
         doses_created = 0
+        start_utc = datetime.combine(start_date_local, time(0,0)).replace(tzinfo=LOCAL_TZ).astimezone(timezone.utc)
+        end_utc = datetime.combine(end_date_local, time(23,59)).replace(tzinfo=LOCAL_TZ).astimezone(timezone.utc)
         
         # We run transaction for inserting all generated events/doses
         async with conn.transaction():
@@ -84,13 +86,25 @@ class SchedulerService:
                 WHERE created_by = $1::uuid AND instruction_type IN ('PAUSE', 'RESUME', 'FINISH');
             """, patient_id)
             
+            # Bulk fetch existing medication events in the range
+            existing_events_rows = await conn.fetch("""
+                SELECT id, scheduled_at FROM medication_events
+                WHERE patient_id = $1::uuid AND scheduled_at >= $2 AND scheduled_at <= $3;
+            """, patient_id, start_utc, end_utc)
+            
+            # Map scheduled_at to event ID in memory
+            existing_events = {row["scheduled_at"]: row["id"] for row in existing_events_rows}
+            
+            # Bulk fetch existing event doses in the range
+            existing_doses = set()
+            if existing_events:
+                doses_rows = await conn.fetch("""
+                    SELECT id, event_id, schedule_id FROM event_doses
+                    WHERE event_id = ANY($1::uuid[]);
+                """, list(existing_events.values()))
+                existing_doses = {(row["event_id"], row["schedule_id"]) for row in doses_rows}
+            
             for s in schedules:
-                # Find all versions of this schedule to check versions effective at scheduled times
-                # But since get_active_schedules_for_patient returns current active version, we can use it
-                # For future timeline generation, the current version is the one active.
-                # If there are older versions, we can retrieve them if we need historical generation,
-                # but typically get_schedule_version_at_time will be used if needed.
-                # Let's generate dates based on version
                 occ_dates = SchedulerService.get_occurrence_dates(s, start_date_local, end_date_local)
                 
                 for occ_date in occ_dates:
@@ -126,18 +140,16 @@ class SchedulerService:
                     if is_finished:
                         continue
                         
-                    # 2. Get or create medication_events at this scheduled time
-                    event = await EventRepository.get_event_by_time(conn, patient_id, utc_dt)
-                    if not event:
-                        event_id = await EventRepository.create_event(conn, patient_id, utc_dt)
+                    # 2. Get or create medication_events at this scheduled time (using memory cache)
+                    if utc_dt in existing_events:
+                        event_id = existing_events[utc_dt]
                     else:
-                        event_id = event["id"]
+                        event_id = await EventRepository.create_event(conn, patient_id, utc_dt)
+                        existing_events[utc_dt] = event_id
                         
-                    # 3. Check if event dose already exists
-                    dose = await EventRepository.get_event_dose_by_schedule_and_event(conn, s["schedule_id"], event_id)
-                    if not dose:
+                    # 3. Check if event dose already exists (using memory cache)
+                    if (event_id, s["schedule_id"]) not in existing_doses:
                         status_str = "NOT_REQUIRED" if is_paused else "PENDING"
-                        status_remark = "Paused" if is_paused else None
                         
                         await EventRepository.create_event_dose(
                             conn=conn,
@@ -150,29 +162,31 @@ class SchedulerService:
                             scheduled_at=utc_dt,
                             status=status_str
                         )
+                        existing_doses.add((event_id, s["schedule_id"]))
                         doses_created += 1
                         
-            # 4. Generate/Update event notifications for pending events
-            # Fetch all events of this patient in the generation range
-            events = await conn.fetch("""
-                SELECT * FROM medication_events
-                WHERE patient_id = $1::uuid AND scheduled_at >= $2 AND scheduled_at <= $3;
-            """, patient_id, 
-               datetime.combine(start_date_local, time(0,0)).replace(tzinfo=LOCAL_TZ).astimezone(timezone.utc),
-               datetime.combine(end_date_local, time(23,59)).replace(tzinfo=LOCAL_TZ).astimezone(timezone.utc))
-               
-            for e in events:
-                # Check active doses in this event
-                active_doses = await conn.fetch("""
-                    SELECT COUNT(*) as cnt FROM event_doses
-                    WHERE event_id = $1::uuid AND status = 'PENDING';
-                """, e["id"])
-                
-                # If there are active doses, schedule or update notification
-                if active_doses[0]["cnt"] > 0:
-                    await EventRepository.create_notification(conn, e["id"], e["scheduled_at"])
-                else:
-                    # If no pending doses, remove notification record
-                    await EventRepository.delete_notification(conn, e["id"])
+            # 4. Bulk update notifications for the range
+            # Delete notifications for events that have no pending doses left
+            await conn.execute("""
+                DELETE FROM event_notifications
+                WHERE event_id IN (
+                    SELECT e.id FROM medication_events e
+                    LEFT JOIN event_doses d ON d.event_id = e.id AND d.status = 'PENDING'
+                    WHERE e.patient_id = $1::uuid AND e.scheduled_at >= $2 AND e.scheduled_at <= $3
+                    GROUP BY e.id
+                    HAVING COUNT(d.id) = 0
+                );
+            """, patient_id, start_utc, end_utc)
+            
+            # Bulk insert/update notifications for events that have pending doses
+            await conn.execute("""
+                INSERT INTO event_notifications (event_id, scheduled_for)
+                SELECT e.id, e.scheduled_at
+                FROM medication_events e
+                JOIN event_doses d ON d.event_id = e.id AND d.status = 'PENDING'
+                WHERE e.patient_id = $1::uuid AND e.scheduled_at >= $2 AND e.scheduled_at <= $3
+                GROUP BY e.id
+                ON CONFLICT (event_id) DO UPDATE SET scheduled_for = EXCLUDED.scheduled_for;
+            """, patient_id, start_utc, end_utc)
                     
         return doses_created
